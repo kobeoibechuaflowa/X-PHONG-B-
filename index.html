@@ -1,0 +1,56 @@
+<!-- index.html -->
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no, viewport-fit=cover">
+    <title>Xé Phong Bì - Chuỗi</title>
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,400;14..32,600;14..32,800&display=swap" rel="stylesheet">
+    <!-- Canvas Confetti -->
+    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1"></script>
+    <!-- MediaPipe Hands -->
+    <script src="https://cdn.jsdelivr.net/npm/@mediapipe/camera_utils/camera_utils.js" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@mediapipe/control_utils/control_utils.js" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@mediapipe/drawing_utils/drawing_utils.js" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@mediapipe/hands/hands.js" crossorigin="anonymous"></script>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <!-- Webcam fullscreen -->
+    <div class="camera-container">
+        <video id="webcam" class="webcam-video" autoplay playsinline muted></video>
+        <canvas id="handCanvas" class="hand-canvas"></canvas>
+    </div>
+
+    <!-- Overlay phong bì -->
+    <div class="envelope-container">
+        <div id="envelope" class="envelope">
+            <div class="envelope-front">
+                <div class="envelope-flap"></div>
+                <div class="envelope-body">
+                    <div class="envelope-heart">💌</div>
+                    <div class="envelope-text">XÉ NGAY</div>
+                </div>
+            </div>
+            <div class="envelope-rip-left"></div>
+            <div class="envelope-rip-right"></div>
+        </div>
+    </div>
+
+    <!-- Panel thưởng -->
+    <div id="rewardPanel" class="reward-panel hidden">
+        <div class="reward-card">
+            <div class="reward-label">🎉 TRÚNG THÌ VUI-ĐEN PHẢI CHỊU 🎉</div>
+            <div class="reward-amount" id="amountDisplay">0</div>
+            <div class="reward-currency">VNĐ</div>
+            <button id="resetBtn" class="reset-btn">✨ MỞ LẠI ✨</button>
+        </div>
+    </div>
+
+    <!-- Fallback overlay (kéo chuột) -->
+    <div id="mouseDragOverlay" class="mouse-overlay hidden"></div>
+
+    <script src="script.js"></script>
+</body>
+</html>

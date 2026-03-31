@@ -1,0 +1,334 @@
+/* style.css - Giao diện AR toàn màn hình, phong bì nổi trên camera */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    user-select: none;
+}
+
+body {
+    font-family: 'Inter', sans-serif;
+    overflow: hidden;
+    height: 100vh;
+    width: 100vw;
+    background: #000;
+}
+
+/* Camera fullscreen */
+.camera-container {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    overflow: hidden;
+    z-index: 1;
+}
+
+.webcam-video {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transform: scaleX(-1); /* mirror */
+}
+
+.hand-canvas {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    pointer-events: none;
+    transform: scaleX(-1);
+    z-index: 2;
+}
+
+/* Phong bì nổi trên camera */
+.envelope-container {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    z-index: 3;
+    pointer-events: none; /* để tương tác chuột fallback vẫn hoạt động? Sẽ bật lại cho envelope */
+}
+
+.envelope {
+    position: relative;
+    width: 320px;
+    height: 220px;
+    cursor: pointer;
+    pointer-events: auto; /* cho phép tương tác chuột */
+    transition: all 0.2s ease;
+    filter: drop-shadow(0 10px 20px rgba(0,0,0,0.4));
+}
+
+.envelope:hover {
+    animation: shake 0.4s ease-in-out 0s 1;
+    filter: drop-shadow(0 0 15px rgba(255,215,0,0.7));
+}
+
+@keyframes shake {
+    0%,100%{ transform: translateX(0); }
+    25%{ transform: translateX(-3px); }
+    75%{ transform: translateX(3px); }
+}
+
+.envelope-front {
+    position: relative;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(145deg, #fae67a, #f5cd6d);
+    border-radius: 12px;
+    box-shadow: 0 15px 25px rgba(0,0,0,0.3);
+    overflow: hidden;
+    border: 1px solid rgba(255,215,0,0.6);
+    backdrop-filter: blur(2px);
+}
+
+.envelope-flap {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 50%;
+    background: #f5c542;
+    clip-path: polygon(0% 0%, 100% 0%, 50% 70%);
+    border-radius: 12px 12px 0 0;
+    z-index: 2;
+}
+
+.envelope-body {
+    position: absolute;
+    bottom: 0;
+    width: 100%;
+    height: 60%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    font-weight: bold;
+    color: #a55117;
+}
+
+.envelope-heart {
+    font-size: 2.5rem;
+    animation: pulse 1.5s infinite;
+}
+
+@keyframes pulse {
+    0% { transform: scale(1); opacity: 0.8; }
+    50% { transform: scale(1.1); opacity: 1; }
+    100% { transform: scale(1); opacity: 0.8; }
+}
+
+.envelope-text {
+    background: rgba(255,245,200,0.9);
+    padding: 4px 12px;
+    border-radius: 30px;
+    font-size: 0.9rem;
+    font-weight: 700;
+    color: #b45f1b;
+}
+
+.envelope-rip-left,
+.envelope-rip-right {
+    position: absolute;
+    top: 0;
+    width: 50%;
+    height: 100%;
+    background: linear-gradient(120deg, #f9e0a0, #f2ca6e);
+    border-radius: 12px;
+    transition: transform 0.5s cubic-bezier(0.34, 1.2, 0.64, 1);
+    z-index: 5;
+    box-shadow: 0 5px 15px rgba(0,0,0,0.3);
+    opacity: 0;
+    pointer-events: none;
+}
+
+.envelope-rip-left {
+    left: 0;
+    transform-origin: left center;
+    border-right: 2px dashed #b45f1b;
+}
+
+.envelope-rip-right {
+    right: 0;
+    transform-origin: right center;
+    border-left: 2px dashed #b45f1b;
+}
+
+.rip-active .envelope-front {
+    opacity: 0;
+    pointer-events: none;
+}
+
+.rip-active .envelope-rip-left,
+.rip-active .envelope-rip-right {
+    opacity: 1;
+}
+
+.rip-active .envelope-rip-left {
+    animation: tearLeft 0.6s forwards;
+}
+
+.rip-active .envelope-rip-right {
+    animation: tearRight 0.6s forwards;
+}
+
+@keyframes tearLeft {
+    0% { transform: translateX(0) rotate(0deg); opacity: 1; }
+    100% { transform: translateX(-35%) rotate(-12deg); opacity: 0; visibility: hidden; }
+}
+
+@keyframes tearRight {
+    0% { transform: translateX(0) rotate(0deg); opacity: 1; }
+    100% { transform: translateX(35%) rotate(12deg); opacity: 0; visibility: hidden; }
+}
+
+.instruction {
+    background: rgba(0,0,0,0.6);
+    backdrop-filter: blur(10px);
+    padding: 12px 20px;
+    border-radius: 60px;
+    color: #fff;
+    font-size: 0.9rem;
+    text-align: center;
+    margin-top: 20px;
+    pointer-events: auto;
+    max-width: 90%;
+    border: 1px solid rgba(255,215,0,0.3);
+}
+
+.gesture-highlight {
+    color: #ffcc33;
+    font-weight: bold;
+}
+
+.mouse-fallback {
+    font-size: 0.75rem;
+    color: #ccc;
+    display: block;
+    margin-top: 6px;
+}
+
+/* Reward Panel */
+.reward-panel {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0,0,0,0.85);
+    backdrop-filter: blur(12px);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 200;
+    transition: all 0.3s;
+    opacity: 0;
+    visibility: hidden;
+}
+
+.reward-panel.show {
+    opacity: 1;
+    visibility: visible;
+}
+
+.reward-card {
+    background: linear-gradient(145deg, #ffecb3, #ffe0a3);
+    border-radius: 2.5rem;
+    padding: 2rem 3rem;
+    text-align: center;
+    box-shadow: 0 30px 40px rgba(0,0,0,0.5);
+    border: 2px solid gold;
+    animation: popIn 0.4s cubic-bezier(0.34, 1.2, 0.64, 1) forwards;
+}
+
+@keyframes popIn {
+    0% { transform: scale(0.7); opacity: 0; }
+    100% { transform: scale(1); opacity: 1; }
+}
+
+.reward-label {
+    font-size: 1.8rem;
+    font-weight: 800;
+    color: #c0392b;
+    text-shadow: 2px 2px 0 #ffd966;
+    margin-bottom: 1rem;
+}
+
+.reward-amount {
+    font-size: 4.5rem;
+    font-weight: 800;
+    background: linear-gradient(135deg, #f39c12, #e67e22);
+    background-clip: text;
+    -webkit-background-clip: text;
+    color: transparent;
+    letter-spacing: 2px;
+    line-height: 1;
+}
+
+.reward-currency {
+    font-size: 2rem;
+    font-weight: 600;
+    color: #d35400;
+    margin-bottom: 2rem;
+}
+
+.reset-btn {
+    background: #2c3e50;
+    border: none;
+    padding: 12px 28px;
+    border-radius: 50px;
+    font-size: 1.2rem;
+    font-weight: bold;
+    color: #f1c40f;
+    cursor: pointer;
+    transition: 0.2s;
+    box-shadow: 0 5px 0 #1a2632;
+}
+
+.reset-btn:active {
+    transform: translateY(2px);
+    box-shadow: 0 2px 0 #1a2632;
+}
+
+.mouse-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: transparent;
+    z-index: 999;
+    display: none;
+    cursor: grabbing;
+}
+
+/* Responsive */
+@media (max-width: 700px) {
+    .envelope {
+        width: 260px;
+        height: 180px;
+    }
+    .reward-amount {
+        font-size: 2.8rem;
+    }
+    .reward-card {
+        padding: 1.2rem 1.8rem;
+    }
+    .instruction {
+        font-size: 0.75rem;
+        bottom: 20px;
+    }
+}
